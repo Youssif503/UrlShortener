@@ -21,7 +21,9 @@ public class ShortUrlService(
         while (attempts > 0)
         {
             string shortCode = CreateShortCode();
-            string shortUrl = $"{_configuration["domain"]!}/{shortCode}";
+
+            string shortUrl =
+                $"{_configuration["Domain"]!}/{shortCode}";
 
             var newUrl = new Url
             {
@@ -44,6 +46,7 @@ public class ShortUrlService(
                     postgresException.SqlState == "23505")
                 {
                     _context.Entry(newUrl).State = EntityState.Detached;
+
                     attempts--;
                     continue;
                 }
@@ -57,32 +60,47 @@ public class ShortUrlService(
         );
     }
 
-    public async Task<Result<Url>> ResolveAsync(string ShortUrl)
+    public async Task<Result<Url>> ResolveAsync(string shortCode)
     {
-        var result = await _cacheService.GetAsync<Url>(ShortUrl);
+        // Same key for GET and SET
+        var key = $"url:{shortCode}";
 
-        if(result == null) // Cache Miss
+        // Try Redis first
+        var cachedUrl = await _cacheService.GetAsync<Url>(key);
+
+        if (cachedUrl is not null)
         {
-        var url = await _context.Urls.FirstOrDefaultAsync(x=>x.ShortUrl == ShortUrl);
+            // Cache Hit
+            return Result<Url>.Success(cachedUrl);
+        }
 
-        if(url is null)
-           return Result<Url>.Fail(["The Url Does Not Found Yasta"]);
-        
-        // Cache Aside 
-        var key = $"url:{ShortUrl}";
+        // Cache Miss → Database
+        var url = await _context.Urls
+            .FirstOrDefaultAsync(x =>
+                x.ShortUrl.EndsWith($"/{shortCode}"));
+
+        if (url is null)
+        {
+            return Result<Url>.Fail(
+                ["The Url Does Not Found Yasta"]
+            );
+        }
+
+        // Store in Redis
         var ttl = TimeSpan.FromDays(1);
-        await _cacheService.SetAsync(key,url,ttl);
+
+        await _cacheService.SetAsync(
+            key,
+            url,
+            ttl
+        );
 
         return Result<Url>.Success(url);
-        }
-        // Cache Hit 
-        return Result<Url>.Success(result);
-
     }
 
     private string CreateShortCode()
     {
-        const string digits =
+        const string characters =
             "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
         StringBuilder builder = new(8);
@@ -90,9 +108,9 @@ public class ShortUrlService(
         for (int i = 0; i < 8; i++)
         {
             int randomNumber =
-                RandomNumberGenerator.GetInt32(digits.Length);
+                RandomNumberGenerator.GetInt32(characters.Length);
 
-            builder.Append(digits[randomNumber]);
+            builder.Append(characters[randomNumber]);
         }
 
         return builder.ToString();

@@ -16,8 +16,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("DefaultConnection")
     ));
-    
-builder.Services.AddScoped<ICacheService,CacheService>();
+
+builder.Services.AddScoped<ICacheService, CacheService>();
+builder.Services.AddScoped<IShortUrlService, ShortUrlService>();
 
 builder.Services.AddControllers();
 

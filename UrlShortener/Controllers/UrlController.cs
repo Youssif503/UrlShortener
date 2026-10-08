@@ -13,7 +13,7 @@ namespace UrlShortener.Controllers
         {
             var result  = await _shortUrlService.AddShortUrlAsync(url.LongUrl);
 
-            return result.IsSuccess ? Ok(result.Data.ShortUrl) : BadRequest(result.Errors);
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
         [HttpGet("{url}")]
         public async Task<IActionResult> ResolveUrl([FromRoute]string url)
