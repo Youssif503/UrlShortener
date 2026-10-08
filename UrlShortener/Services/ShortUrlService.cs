@@ -11,7 +11,8 @@ namespace UrlShortener.Services;
 
 public class ShortUrlService(
     ApplicationDbContext _context,
-    IConfiguration _configuration) : IShortUrlService
+    IConfiguration _configuration,
+    ICacheService _cacheService) : IShortUrlService
 {
     public async Task<Result<Url>> AddShortUrlAsync(string requestUrl)
     {
@@ -58,12 +59,25 @@ public class ShortUrlService(
 
     public async Task<Result<Url>> ResolveAsync(string ShortUrl)
     {
+        var result = await _cacheService.GetAsync<Url>(ShortUrl);
+
+        if(result == null) // Cache Miss
+        {
         var url = await _context.Urls.FirstOrDefaultAsync(x=>x.ShortUrl == ShortUrl);
 
         if(url is null)
            return Result<Url>.Fail(["The Url Does Not Found Yasta"]);
+        
+        // Cache Aside 
+        var key = $"url:{ShortUrl}";
+        var ttl = TimeSpan.FromDays(1);
+        await _cacheService.SetAsync(key,url,ttl);
 
         return Result<Url>.Success(url);
+        }
+        // Cache Hit 
+        return Result<Url>.Success(result);
+
     }
 
     private string CreateShortCode()

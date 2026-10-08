@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "AtfMWKYBzg8=",
+  "dgSpecHash": "gXv+CvAHcSc=",
   "success": true,
   "projectFilePath": "/home/youssifsayed/Projects/UrlShortener/UrlShortener/UrlShortener.csproj",
   "expectedPackageFiles": [
@@ -11,7 +11,10 @@
     "/home/youssifsayed/.nuget/packages/microsoft.entityframeworkcore.relational/10.0.0/microsoft.entityframeworkcore.relational.10.0.0.nupkg.sha512",
     "/home/youssifsayed/.nuget/packages/microsoft.openapi/2.7.5/microsoft.openapi.2.7.5.nupkg.sha512",
     "/home/youssifsayed/.nuget/packages/npgsql/10.0.0/npgsql.10.0.0.nupkg.sha512",
-    "/home/youssifsayed/.nuget/packages/npgsql.entityframeworkcore.postgresql/10.0.0/npgsql.entityframeworkcore.postgresql.10.0.0.nupkg.sha512"
+    "/home/youssifsayed/.nuget/packages/npgsql.entityframeworkcore.postgresql/10.0.0/npgsql.entityframeworkcore.postgresql.10.0.0.nupkg.sha512",
+    "/home/youssifsayed/.nuget/packages/respite/4.0.69-alpha/respite.4.0.69-alpha.nupkg.sha512",
+    "/home/youssifsayed/.nuget/packages/stackexchange.redis/4.0.69-alpha/stackexchange.redis.4.0.69-alpha.nupkg.sha512",
+    "/home/youssifsayed/.nuget/packages/system.io.hashing/10.0.12/system.io.hashing.10.0.12.nupkg.sha512"
   ],
   "logs": []
 }

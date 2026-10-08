@@ -13,6 +13,7 @@
     <SourceRoot Include="/home/youssifsayed/.nuget/packages/" />
   </ItemGroup>
   <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)stackexchange.redis/4.0.69-alpha/build/StackExchange.Redis.props" Condition="Exists('$(NuGetPackageRoot)stackexchange.redis/4.0.69-alpha/build/StackExchange.Redis.props')" />
     <Import Project="$(NuGetPackageRoot)microsoft.entityframeworkcore/10.0.0/buildTransitive/net10.0/Microsoft.EntityFrameworkCore.props" Condition="Exists('$(NuGetPackageRoot)microsoft.entityframeworkcore/10.0.0/buildTransitive/net10.0/Microsoft.EntityFrameworkCore.props')" />
   </ImportGroup>
 </Project>
